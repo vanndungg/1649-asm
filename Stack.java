@@ -1,36 +1,47 @@
-package asm;
-
-public class Stack {
+class CustomStack {
     private Node top;
     private int nodesCount;
-    public Stack(){
+
+    public CustomStack() {
         top = null;
         nodesCount = 0;
     }
+
     public boolean isEmpty() {
         return top == null;
     }
+
     public int size() {
         return nodesCount;
     }
+
     public void push(String element) {
-        Node node = new Node();
-        System.out.println(("Addeed: " + element));
-        node.data = element;
+        Node node = new Node(element);
         node.next = top;
         top = node;
         nodesCount++;
     }
-    public void print(){
-        if (top == null){
-            System.out.printf("\nStack Underflow");
-            System.exit(-1);
+
+    public String pop() {
+        if (isEmpty()) {
+            System.out.println("\nStack Underflow");
+            return null;
+        } else {
+            String popped = top.getData();
+            top = top.getNext();
+            nodesCount--;
+            return popped;
         }
-        else {
+    }
+
+    public void print() {
+        if (top == null) {
+            System.out.printf("\nStack Underflow");
+        } else {
             Node temp = top;
             while (temp != null) {
-                System.out.print(temp.data + " -> ");
-                temp = temp.next;
+                System.out.print(temp.getData() + " -> ");
+                temp = temp.getNext();
             }
             System.out.println("null\n");
         }
