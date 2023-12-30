@@ -6,6 +6,7 @@ public class Manager {
     public Stack<String> stack;
     private String[] messages;
     private Manager connectedSystem = null;
+    private Manager disconnectedSystem = null;
 
     public Manager() {
         outbox = new Queue<>();
@@ -27,10 +28,20 @@ public class Manager {
         }
         connectedSystem = system;
         system.connectedSystem(this);
-        System.out.println("Connected");
+        //System.out.println("Connected");
+    }
+    public void disconnectedSystem(Manager system) {
+        if (disconnectedSystem == null) {
+            System.out.println("Disconnected");
+            return;
+        }
+        disconnectedSystem = system;
+        system.disconnectedSystem(this);
+        System.out.println("Disconnected");
     }
 
     public boolean isConnected() {
+
         return connectedSystem != null;
     }
 
