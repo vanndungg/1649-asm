@@ -24,7 +24,7 @@ class CustomStack {
 
     public String pop() {
         if (isEmpty()) {
-            System.out.println("\nStack Underflow");
+            System.out.println("\nStack Underflow\n");
             return null;
         } else {
             String popped = top.getData();
@@ -36,7 +36,7 @@ class CustomStack {
 
     public void print() {
         if (top == null) {
-            System.out.printf("\nStack Underflow");
+            System.out.printf("\nStack Underflow\n");
         } else {
             Node temp = top;
             while (temp != null) {

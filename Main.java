@@ -33,6 +33,7 @@ public class Main {
 
     private static void sendMessage(CustomQueue senderQueue, CustomStack receiverStack) {
         try {
+            long startTime = System.currentTimeMillis(); // Thời điểm bắt đầu gửi tin nhắn
             for (String message : messages) {
                 if (message.equals("")) {
                     throw new Exception("Empty message detected.");
@@ -45,9 +46,13 @@ public class Main {
                         message = message.substring(250);
                     }
                 } else {
+                    System.out.println("Send Message successful");
                     senderQueue.enqueue(message);
                 }
             }
+            long endTime = System.currentTimeMillis(); // Thời điểm kết thúc gửi tin nhắn
+            long elapsedTime = endTime - startTime; // Thời gian trôi qua từ bắt đầu đến kết thúc gửi tin nhắn
+            System.out.println("Time taken to send message: " + elapsedTime + " milliseconds");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -117,6 +122,7 @@ public class Main {
                                     System.out.println("Error: Connection not established.");
                                 } else {
                                     process(queueB, stackA);
+
                                 }
                                 break;
                             case 3:
