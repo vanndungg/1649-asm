@@ -1,49 +1,101 @@
-class CustomStack {
-    private Node top;
-    private int nodesCount;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-    public CustomStack() {
+public class Stack<E> implements AbstractStack<E> {
+    private Node<E> top; // Top of the stack
+    private int size; // Track the size of stack
+
+    /**
+     * METHODS
+     */
+    // Constructor
+    public Stack( ) {
         top = null;
-        nodesCount = 0;
+        size = 0;
     }
-
-    public boolean isEmpty() {
-        return top == null;
-    }
-
-    public int size() {
-        return nodesCount;
-    }
-
-    public void push(String element) {
-        Node node = new Node(element);
-        node.next = top;
-        top = node;
-        nodesCount++;
-    }
-
-    public String pop() {
-        if (isEmpty()) {
-            System.out.println("\nStack Underflow\n");
-            return null;
+    // Push an element onto the stack
+    @Override
+    public void push( E element ) {
+        Node<E> newNode = new Node<>( element );
+        if ( isEmpty( ) ) {
+            top = newNode;
         } else {
-            String popped = top.getData();
-            top = top.getNext();
-            nodesCount--;
-            return popped;
+            newNode.next = top;
+            top = newNode;
         }
+        size++;
     }
-
-    public void print() {
-        if (top == null) {
-            System.out.printf("\nStack Underflow\n");
-        } else {
-            Node temp = top;
-            while (temp != null) {
-                System.out.print(temp.getData() + " -> ");
-                temp = temp.getNext();
+    // Pop an element from the stack
+    @Override
+    public E pop( ) {
+        if ( isEmpty( ) ) {
+            throw new NoSuchElementException( );
+        }
+        E element = top.element;
+        Node<E> next = top.next;
+        top.next = null;
+        top = next;
+        size--;
+        return element;
+    }
+    // Peek at the top element without removing it
+    @Override
+    public E peek( ) {
+        if ( isEmpty( ) ) {
+            throw new NoSuchElementException( );
+        }
+        return top.element;
+    }
+    @Override
+    public int size( ) {
+        return size;
+    }
+    // Check if the stack is empty
+    @Override
+    public boolean isEmpty( ) {
+        return top == null; // or size == 0
+    }
+    @Override
+    public Iterator<E> iterator( ) {
+        return new Iterator<E>( ) {
+            Node<E> current = top;
+            @Override
+            public boolean hasNext( ) {
+                return current != null;
             }
-            System.out.println("null\n");
+
+            @Override
+            public E next( ) {
+                if ( !hasNext( ) ) {
+                    throw new NoSuchElementException( );
+                }
+                E element = current.element;
+                current = current.next;
+                return element;
+            }
+        };
+    }
+    @Override
+    public String toString( ) {
+        StringBuilder result = new StringBuilder( "[" );
+        Node<E> current = top;
+
+        while ( current != null ) {
+            result.append( current.element );
+            if ( current.next != null ) {
+                result.append( ", " );
+            }
+            current = current.next;
+        }
+
+        result.append( "]" );
+        return result.toString( );
+    }
+    private static class Node<E> {
+        private E element;
+        private Node<E> next;
+        public Node( E element ) {
+            this.element = element;
         }
     }
 }

@@ -1,208 +1,148 @@
 import java.util.Scanner;
 
 public class Main {
-    static CustomStack stackA = new CustomStack();
-    static CustomQueue queueA = new CustomQueue();
-    static CustomStack stackB = new CustomStack();
-    static CustomQueue queueB = new CustomQueue();
-    static boolean connectionEstablished = false;
-    static boolean systemAConnected = false;
-    static boolean systemBConnected = false;
-    static String[] messages;
-
-    private static void inputMessages() {
-        System.out.print("Enter messages: ");
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        messages = input.split(",");
-    }
-
-    private static void establishConnection() {
-        System.out.println("Connecting systems...");
-        connectionEstablished = true;
-        System.out.println("Connection successful!");
-    }
-
-    private static void destroyConnection() {
-        System.out.println("Destroying connection...");
-        connectionEstablished = false;
-        systemAConnected = false;
-        systemBConnected = false;
-        System.out.println("Connection destroyed!");
-    }
-
-    private static void sendMessage(CustomQueue senderQueue, CustomStack receiverStack) {
-        try {
-            long startTime = System.currentTimeMillis(); // Thời điểm bắt đầu gửi tin nhắn
-            for (String message : messages) {
-                if (message.equals("")) {
-                    throw new Exception("Empty message detected.");
-                } else if (message.length() > 250) {
-                    System.out.println("Message length exceeds 250 characters. Truncating the message.");
-                    while (message.length() > 250) {
-                        String truncatedMessage = message.substring(0, 250);
-                        senderQueue.enqueue(truncatedMessage);
-                        System.out.println("Transferring message: \n" + truncatedMessage + " ...");
-                        message = message.substring(250);
-                    }
-                } else {
-                    System.out.println("Send Message successful");
-                    senderQueue.enqueue(message);
-                }
-            }
-            long endTime = System.currentTimeMillis(); // Thời điểm kết thúc gửi tin nhắn
-            long elapsedTime = endTime - startTime; // Thời gian trôi qua từ bắt đầu đến kết thúc gửi tin nhắn
-            System.out.println("Time taken to send message: " + elapsedTime + " milliseconds");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private static void process(CustomQueue senderQueue, CustomStack receiverStack) {
-        while (!senderQueue.isEmpty()) {
-            String message = senderQueue.dequeue();
-            System.out.println("Received message: \n" + message);
-            receiverStack.push(message);
-        }
-    }
-
-    private static void result(CustomStack stack) {
-        while (!stack.isEmpty()) {
-            System.out.println("Message received: \n" + stack.pop());
-        }
-    }
-
-    private static void showQueue(CustomQueue queue) {
-        queue.print();
-    }
-
-    private static void showStack(CustomStack stack) {
-        stack.print();
-    }
-
     public static void main(String[] args) {
+        Manager systemA = new Manager();
+        Manager systemB = new Manager();
         Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("Choose System: ");
+        int choice;
+        do {
+            System.out.println("Main Menu:");
             System.out.println("1. System A");
             System.out.println("2. System B");
             System.out.println("3. Exit");
-            System.out.println("Enter your selection: ");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
 
-            int systemChoice = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (systemChoice) {
+            switch (choice) {
                 case 1:
-                    if (!systemAConnected) {
-                        establishConnection();
-                        systemAConnected = true;
-                    }
-
-                    System.out.println("System A Menu:");
-                    while (true) {
-                        System.out.println("1. Send Message");
-                        System.out.println("2. Receive Message");
-                        System.out.println("3. Show Queue");
-                        System.out.println("4. Show Stack");
-                        System.out.println("5. Exit");
-                        System.out.println("Enter your selection: ");
-
-                        int choice = scanner.nextInt();
-                        scanner.nextLine();
-
-                        switch (choice) {
-                            case 1:
-                                inputMessages();
-                                sendMessage(queueA, stackB);
-                                break;
-                            case 2:
-                                if (!connectionEstablished) {
-                                    System.out.println("Error: Connection not established.");
-                                } else {
-                                    process(queueB, stackA);
-
-                                }
-                                break;
-                            case 3:
-                                showQueue(queueA);
-                                break;
-                            case 4:
-                                showStack(stackA);
-                                break;
-                            case 5:
-                                destroyConnection();
-                                break;
-                            default:
-                                System.out.println("Invalid option. Please choose again.");
-                                break;
-                        }
-
-                        if (choice == 5) {
-                            break;
-                        }
-                    }
+                    systemMenuA(systemA, systemB);
                     break;
-
                 case 2:
-                    if (!systemBConnected) {
-                        establishConnection();
-                        systemBConnected = true;
-                    }
-
-                    System.out.println("System B Menu:");
-                    while (true) {
-                        System.out.println("1. Send Message");
-                        System.out.println("2. Receive Message");
-                        System.out.println("3. Show Queue");
-                        System.out.println("4. Show Stack");
-                        System.out.println("5. Exit");
-                        System.out.println("Enter your selection: ");
-
-                        int choice = scanner.nextInt();
-                        scanner.nextLine();
-
-                        switch (choice) {
-                            case 1:
-                                inputMessages();
-                                sendMessage(queueB, stackA);
-                                break;
-                            case 2:
-                                if (!connectionEstablished) {
-                                    System.out.println("Error: Connection not established.");
-                                } else {
-                                    process(queueA, stackB);
-                                }
-                                break;
-                            case 3:
-                                showQueue(queueB);
-                                break;
-                            case 4:
-                                showStack(stackB);
-                                break;
-                            case 5:
-                                destroyConnection();
-                                break;
-                            default:
-                                System.out.println("Invalid option. Please choose again.");
-                                break;
-                        }
-
-                        if (choice == 5) {
-                            break;
-                        }
-                    }
+                    systemMenuB(systemB, systemA);
                     break;
-
                 case 3:
-                    System.out.println("Exiting the program.");
-                    System.exit(0);
-
-                default:
-                    System.out.println("Invalid option. Please choose again.");
+                    System.out.println("Exiting...");
                     break;
+                default:
+                    System.out.println("Invalid choice. Please enter again.");
             }
-        }
+        } while (choice != 3);
+
+        scanner.close();
+    }
+
+
+    public static void systemMenuA(Manager systemA, Manager systemB) {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+        do {
+            System.out.println("\nSystem Menu A:");
+            System.out.println("1. Connect");
+            System.out.println("2. Check connection");
+            System.out.println("3. Send");
+            System.out.println("4. Receive");
+            System.out.println("5. Process");
+            System.out.println("6. Show Outbox");
+            System.out.println("7. Show Stack");
+            System.out.println("8. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    systemA.connectedSystem(systemB);
+                    break;
+                case 2:
+                    systemA.checkConnection();
+                    break;
+                case 3:
+                    systemA.inputMessages();
+                    systemA.sendMessage();
+                    break;
+                case 4:
+                    if (systemA.inbox.isEmpty()) {
+                        // Kiểm tra inbox của hệ thống A
+                        systemB.sendMessage(); // Gửi tin nhắn từ hệ thống A nếu inbox A trống
+                    }
+                    systemA.receive();
+                    break;
+                case 5:
+                    if (!systemA.inbox.isEmpty()) {
+                        systemA.process();
+                    } else {
+                        System.out.println("Inbox is empty. Please receive messages first.");
+                    }
+                    break;
+                case 6:
+                    systemA.showQueue();
+                    break;
+                case 7:
+                    systemA.showStack();
+                    break;
+                case 8:
+                    System.out.println("Returning to Main Menu...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter again.");
+            }
+        } while (option != 8);
+    }
+
+    public static void systemMenuB(Manager systemB, Manager systemA) {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+        do {
+            System.out.println("\nSystem Menu B:");
+            System.out.println("1. Connect");
+            System.out.println("2. Check connection");
+            System.out.println("3. Send");
+            System.out.println("4. Receive");
+            System.out.println("5. Process");
+            System.out.println("6. Show Outbox");
+            System.out.println("7. Show Stack");
+            System.out.println("8. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    systemB.connectedSystem(systemA);
+                    break;
+                case 2:
+                    systemB.checkConnection();
+                    break;
+                case 3:
+                    systemB.inputMessages();
+                    systemB.sendMessage();
+                    break;
+                case 4:
+                    if (systemB.inbox.isEmpty()) {
+                        // Kiểm tra inbox của hệ thống B
+                        systemA.sendMessage(); // Gửi tin nhắn từ hệ thống A nếu inbox B trống
+                    }
+                    systemB.receive();
+                    break;
+                case 5:
+                    if (!systemB.inbox.isEmpty()) {
+                        systemB.process();
+                    } else {
+                        System.out.println("Inbox is empty. Please receive messages first.");
+                    }
+                    break;
+                case 6:
+                    systemB.showQueue();
+                    break;
+                case 7:
+                    systemB.showStack();
+                    break;
+                case 8:
+                    System.out.println("Returning to Main Menu...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter again.");
+            }
+        } while (option != 8);
     }
 }
