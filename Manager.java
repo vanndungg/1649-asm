@@ -13,14 +13,6 @@ public class Manager {
         inbox = new Queue<>();
         stack = new Stack<>();
     }
-
-    public void inputMessages() {
-        System.out.print("Enter messages: ");
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        messages = input.split(",");
-    }
-
     public void connectedSystem(Manager system) {
         if (connectedSystem != null) {
             System.out.println("Already connected");
@@ -43,6 +35,12 @@ public class Manager {
             System.out.println("Not connected to any system.");
         }
     }
+    public void inputMessages() {
+        System.out.print("Enter messages: ");
+        Scanner sc = new Scanner(System.in);
+        String input = sc.nextLine();
+        messages = input.split(",");
+    }
 
     public void sendMessage() {
         if (connectedSystem == null) {
@@ -51,7 +49,7 @@ public class Manager {
             try {
                 for (String message : messages) {
                     if (message.isEmpty()) {
-                        throw new Exception("Empty message detected.");
+                        throw new Exception("Empty message!!");
                     } else if (message.length() > 250) {
                         System.out.println("Message length exceeds 250 characters. Truncating the message.");
                         while (message.length() > 250) {
@@ -82,8 +80,7 @@ public class Manager {
             while (true) {
                 try {
                     if (outbox.isEmpty()) {
-                        System.out.println("Error: Outbox is empty. No message to receive.");
-                        System.out.println("Please try again.");
+                        System.out.println("Outbox is empty");
                         return;
                     }
                     inbox.enqueue(outbox.dequeue());
@@ -109,9 +106,8 @@ public class Manager {
     }
 
     public void check() {
-        // Implement checking message logic
         if (stack.isEmpty()) {
-            System.out.println("Nothing in stack.");
+            System.out.println("Nothing in Stack.");
         } else {
             System.out.println("Popped from STACK: " + stack.pop());
         }

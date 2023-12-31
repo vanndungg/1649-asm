@@ -40,7 +40,7 @@ public class Queue<E> implements AbstractQueue<E> {
 
     @Override
     public boolean isEmpty( ) {
-        return head == null; // or size == 0
+        return head == null;
     }
 
     @Override
@@ -60,7 +60,6 @@ public class Queue<E> implements AbstractQueue<E> {
             }
         };
     }
-    // toString method to represent the queue as a string
     @Override
     public String toString( ) {
         StringBuilder result = new StringBuilder( "[" );

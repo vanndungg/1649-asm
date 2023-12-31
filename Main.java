@@ -38,13 +38,13 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int option;
         do {
-            System.out.println("\nSystem Menu A:");
-            System.out.println("1. Connect");
+            System.out.println("\nMenu A:");
+            System.out.println("1. Connect with System B");
             System.out.println("2. Check connect");
-            System.out.println("3. Send");
-            System.out.println("4. Receive");
-            System.out.println("5. Process");
-            System.out.println("6. Check");
+            System.out.println("3. Send message");
+            System.out.println("4. Receive message");
+            System.out.println("5. Process message");
+            System.out.println("6. Check message");
             System.out.println("7. Back to Main Menu");
             System.out.print("Enter your choice: ");
             option = scanner.nextInt();
@@ -64,10 +64,10 @@ public class Main {
                     systemB.receive();
                     break;
                 case 5:
-                    systemA.process();
+                    systemB.process();
                     break;
                 case 6:
-                    systemA.check();
+                    systemB.check();
                     break;
                 case 7:
                     System.out.println("Returning to Main Menu...");
@@ -83,13 +83,13 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int option;
         do {
-            System.out.println("\nSystem Menu B:");
+            System.out.println("\nMenu B:");
             System.out.println("1. Connect");
             System.out.println("2. Check connect");
-            System.out.println("3. Send");
-            System.out.println("4. Receive");
-            System.out.println("5. Process");
-            System.out.println("6. Check");
+            System.out.println("3. Send message");
+            System.out.println("4. Receive message");
+            System.out.println("5. Process message");
+            System.out.println("6. Check message");
             System.out.println("7. Back to Main Menu");
             System.out.print("Enter your choice: ");
             option = scanner.nextInt();
@@ -109,10 +109,10 @@ public class Main {
                     systemA.receive();
                     break;
                 case 5:
-                    systemB.process();
+                    systemA.process();
                     break;
                 case 6:
-                    systemB.check();
+                    systemA.check();
                     break;
                 case 7:
                     System.out.println("Returning to Main Menu...");

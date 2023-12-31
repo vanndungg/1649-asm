@@ -2,18 +2,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Stack<E> implements AbstractStack<E> {
-    private Node<E> top; // Top of the stack
-    private int size; // Track the size of stack
+    private Node<E> top;
+    private int size;
 
-    /**
-     * METHODS
-     */
-    // Constructor
     public Stack( ) {
         top = null;
         size = 0;
     }
-    // Push an element onto the stack
     @Override
     public void push( E element ) {
         Node<E> newNode = new Node<>( element );
@@ -25,7 +20,6 @@ public class Stack<E> implements AbstractStack<E> {
         }
         size++;
     }
-    // Pop an element from the stack
     @Override
     public E pop( ) {
         if ( isEmpty( ) ) {
@@ -38,15 +32,13 @@ public class Stack<E> implements AbstractStack<E> {
         size--;
         return element;
     }
-    // Peek at the top element without removing it
     @Override
     public int size( ) {
         return size;
     }
-    // Check if the stack is empty
     @Override
     public boolean isEmpty( ) {
-        return top == null; // or size == 0
+        return top == null;
     }
     @Override
     public Iterator<E> iterator( ) {
