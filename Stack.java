@@ -40,13 +40,6 @@ public class Stack<E> implements AbstractStack<E> {
     }
     // Peek at the top element without removing it
     @Override
-    public E peek( ) {
-        if ( isEmpty( ) ) {
-            throw new NoSuchElementException( );
-        }
-        return top.element;
-    }
-    @Override
     public int size( ) {
         return size;
     }

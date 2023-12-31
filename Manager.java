@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Manager {
@@ -6,7 +7,6 @@ public class Manager {
     public Stack<String> stack;
     private String[] messages;
     private Manager connectedSystem = null;
-    private Manager disconnectedSystem = null;
 
     public Manager() {
         outbox = new Queue<>();
@@ -28,16 +28,7 @@ public class Manager {
         }
         connectedSystem = system;
         system.connectedSystem(this);
-        //System.out.println("Connected");
-    }
-    public void disconnectedSystem(Manager system) {
-        if (disconnectedSystem == null) {
-            System.out.println("Disconnected");
-            return;
-        }
-        disconnectedSystem = system;
-        system.disconnectedSystem(this);
-        System.out.println("Disconnected");
+        System.out.println("Connected");
     }
 
     public boolean isConnected() {
@@ -54,29 +45,29 @@ public class Manager {
     }
 
     public void sendMessage() {
-        try {
-            for (String message : messages) {
-                if (message.isEmpty()) {
-                    throw new Exception("Empty message detected.");
-                } else if (message.length() > 250) {
-                    System.out.println("Message length exceeds 250 characters. Truncating the message.");
-                    while (message.length() > 250) {
-                        String truncatedMessage = message.substring(0, 250);
-                        outbox.enqueue(truncatedMessage);
-                        System.out.println("Transferring message: \n" + truncatedMessage + " ...");
-                        message = message.substring(250);
+        if (connectedSystem == null) {
+            System.out.println("Not connected to any system.");
+        } else {
+            try {
+                for (String message : messages) {
+                    if (message.isEmpty()) {
+                        throw new Exception("Empty message detected.");
+                    } else if (message.length() > 250) {
+                        System.out.println("Message length exceeds 250 characters. Truncating the message.");
+                        while (message.length() > 250) {
+                            String truncatedMessage = message.substring(0, 250);
+                            outbox.enqueue(truncatedMessage);
+                            System.out.println("Transferring message: \n" + truncatedMessage + " ...");
+                            message = message.substring(250);
+                        }
+                    } else {
+                        System.out.println("Send Message successful");
+                        outbox.enqueue(message);
                     }
-                } else {
-                    System.out.println("Send Message successful");
-                    outbox.enqueue(message);
                 }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-            // Moved the 'else' block outside the 'for' loop
-            if (connectedSystem == null) {
-                System.out.println("Not connected to any system.");
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 
@@ -85,26 +76,44 @@ public class Manager {
     }
 
     public void receive() {
-        if (this.connectedSystem != null) {
-            while (!outbox.isEmpty()) {
-                System.out.println("Received message: \n");
-                String messageToSend = outbox.dequeue();
-                this.connectedSystem.inbox.enqueue(messageToSend);
-            }
+        if (connectedSystem == null) {
+            System.out.println("Not connected to any system.");
         } else {
-            System.out.println("Not connected. Please connect first.");
+            while (true) {
+                try {
+                    if (outbox.isEmpty()) {
+                        System.out.println("Error: Outbox is empty. No message to receive.");
+                        System.out.println("Please try again.");
+                        return;
+                    }
+                    inbox.enqueue(outbox.dequeue());
+                    System.out.println("Message received successfully.");
+                    System.out.println("Display all messages: ");
+                    System.out.println(inbox);
+                    break;
+                } catch (NoSuchElementException e) {
+                    System.out.println("Error: " + e.getMessage());
+                    System.out.println("Please try again.");
+                }
+            }
         }
     }
 
     public void process() {
-        while (!inbox.isEmpty()) {
-            String message = inbox.dequeue();
-            System.out.println("Processing message: \n" + message);
-            stack.push(message);
+        if (!inbox.isEmpty()) {
+            stack.push(inbox.dequeue());
+            System.out.println("Message pushed to STACK");
+        } else {
+            System.out.println("No Message in INBOX.");
         }
     }
 
-    public void showStack() {
-        System.out.println(stack);
+    public void check() {
+        // Implement checking message logic
+        if (stack.isEmpty()) {
+            System.out.println("Nothing in stack.");
+        } else {
+            System.out.println("Popped from STACK: " + stack.pop());
+        }
     }
 }

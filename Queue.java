@@ -37,10 +37,12 @@ public class Queue<E> implements AbstractQueue<E> {
         size--;
         return data;
     }
+
     @Override
     public boolean isEmpty( ) {
         return head == null; // or size == 0
     }
+
     @Override
     public Iterator<E> iterator( ) {
         return new Iterator<>( ) {
