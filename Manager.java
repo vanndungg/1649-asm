@@ -43,35 +43,26 @@ public class Manager {
     }
 
     public void sendMessage() {
+        long startTime = System.nanoTime();
         if (connectedSystem == null) {
             System.out.println("Not connected to any system.");
         } else {
-            try {
-                for (String message : messages) {
-                    if (message.isEmpty()) {
-                        throw new Exception("Empty message!!");
-                    } else if (message.length() > 250) {
-                        System.out.println("Message length exceeds 250 characters. Truncating the message.");
-                        while (message.length() > 250) {
-                            String truncatedMessage = message.substring(0, 250);
-                            outbox.enqueue(truncatedMessage);
-                            System.out.println("Transferring message: \n" + truncatedMessage + " ...");
-                            message = message.substring(250);
-                        }
-                    } else {
-                        System.out.println("Send Message successful");
-                        outbox.enqueue(message);
-                    }
+            for (String message : messages) {
+                if (message.length() == 0 || message.length() > 250) {
+                    System.out.println("Invalid message length.");
+                    return;
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+                outbox.enqueue(message);
+                System.out.println("Send Message success");
+                System.out.println("Display all messages: ");
+                System.out.println(outbox);
             }
         }
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Time taken to send message: " + elapsedTime + " nanoseconds");
     }
 
-    public void showQueue() {
-        System.out.println(outbox);
-    }
 
     public void receive() {
         if (connectedSystem == null) {
